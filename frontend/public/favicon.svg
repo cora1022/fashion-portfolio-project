@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Style Finder</title>
+  <desc id="desc">Style Finder의 SF 이니셜 서비스 마크</desc>
+  <rect width="64" height="64" fill="#171916"/>
+  <path d="M10 10h18v6H16v10h10v6H16v16h12v6H10V10Zm25 0h19v6H41v11h11v6H41v21h-6V10Z" fill="#F2EFE6"/>
+  <rect x="52" y="48" width="6" height="6" fill="#3452D1"/>
+</svg>
