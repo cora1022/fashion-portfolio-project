@@ -35,4 +35,6 @@ jobs:
       - run: docker build -f frontend/Dockerfile .
       - run: docker build -f backend/Dockerfile .
       - run: test ! -f .env
-      - run: "! git ls-files | grep -E '(^|/)\.env$|(^|/)(qdrant_storage|catalog/images)/'"
+      - name: Ensure secrets and local data are not tracked
+        run: |
+          ! git ls-files | grep -E '(^|/)\.env$|(^|/)(qdrant_storage|catalog/images)/'
