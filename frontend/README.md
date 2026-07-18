@@ -14,8 +14,9 @@ Style Finder의 React 사용자 인터페이스입니다.
 - 유사도, 카테고리, 태그, 원본 링크 결과 표시
 
 회원 API는 `src/api/members.ts`, 검색 API는 `src/api/search.ts`로 분리되어 있습니다.
-Access Token은 현재 메모리에만 저장합니다. Refresh Token 쿠키, 새로고침 세션 복원,
-검색 기록, 저장 목록과 마이페이지는 아직 연결되지 않았습니다.
+Access Token은 현재 메모리에만 저장하고 검색·크롭 요청의 Bearer 헤더로 전달합니다.
+Refresh Token 쿠키, 새로고침 세션 복원, 검색 기록, 저장 목록과 마이페이지는 아직
+연결되지 않았습니다.
 
 ## 실행
 

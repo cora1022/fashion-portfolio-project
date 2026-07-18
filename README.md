@@ -5,8 +5,8 @@
 벡터 검색에 Spring Boot 회원 서비스와 MySQL을 결합하고 있습니다.
 
 현재 React, FastAPI, Spring Boot, Qdrant, MySQL, Caddy가 하나의 Docker Compose
-스택으로 실행됩니다. 서비스 경계는 구현되어 있지만 인증과 사용자 활동 기능의 통합이
-진행 중이므로 완성된 마이크로서비스라고 표현하지 않습니다.
+스택으로 실행됩니다. 서비스 경계와 검색 API 인증 기준선은 구현되어 있지만 사용자 활동
+기능의 통합이 진행 중이므로 완성된 마이크로서비스라고 표현하지 않습니다.
 
 ## 현재 구현
 
@@ -25,6 +25,7 @@
 - 임의 URL 다운로드 API 제거와 로컬 manifest 기반 이미지 제공
 - 추론 thread offload, 동시 실행 제한, liveness/readiness
 - 권리 메타데이터 기반 카탈로그 인덱서와 로컬 legacy 마이그레이션 도구
+- Spring Boot가 발급한 RS256 Access Token을 이용한 검색·크롭 API 보호
 
 ### 회원 서비스 기준선
 
@@ -32,21 +33,23 @@
 - 회원가입·로그인·내 정보 조회
 - BCrypt 비밀번호 해시
 - Access/Refresh Token 발급과 Refresh Token 해시 저장·회전·폐기
+- RSA 비대칭키 서명, issuer·audience·만료·token type 검증
+- 일관된 Spring Security 401/403 오류 응답
 - MySQL과 Flyway V1/V2 migration
 - 검색 기록·저장 결과용 JPA 엔티티와 API 기준선
+- H2 기반 회원·인증 통합 테스트
 
 ## 아직 완료되지 않은 기능
 
-- FastAPI 검색 API의 서버 측 Access Token 검증
 - HttpOnly 쿠키 기반 Refresh Token과 React 세션 복원
 - 검색 기록·저장 목록·마이페이지 React 연결
-- Spring Security 401/403 공통 오류 응답
 - 회원 서비스 DB readiness와 실제 검색 실행 timeout
-- Spring Boot 자동 테스트와 GitHub Actions 검증
+- GitHub Actions의 member-service 검증 작업
 - 공개 배포 가능한 권리 확보 카탈로그
 
-현재 로그인 제한은 React 사용자 흐름에 적용되어 있습니다. 검색 API 자체의 인증은 다음
-보안 단계에서 Spring 발급 토큰을 FastAPI가 검증하는 방식으로 추가할 예정입니다.
+React는 검색·크롭 요청에 Access Token을 전달하고, FastAPI는 Spring Boot와 공개키를
+공유해 서명과 표준 claim을 검증합니다. Refresh Token은 아직 JSON 응답으로 전달되므로
+브라우저 세션 복원 전까지는 보안 기준선이 완성된 상태가 아닙니다.
 
 ## 아키텍처
 
@@ -66,8 +69,9 @@ Spring Boot와 FastAPI는 데이터베이스를 공유하지 않습니다. Sprin
 
 ## 로컬 실행
 
-JDK 21, Docker Desktop이 필요합니다. `.env.example`의 비밀번호와 JWT 값은 로컬 실행
-기본값일 뿐 운영 환경에서 사용하면 안 됩니다.
+JDK 21, Docker Desktop이 필요합니다. `.env.example`의 비밀번호는 로컬 실행 기본값일
+뿐 운영 환경에서 사용하면 안 됩니다. RSA 키는 첫 Compose 실행 시 전용 Docker volume에
+생성되며 Git에 저장되지 않습니다.
 
 ```powershell
 docker compose --env-file .env.example config
@@ -99,8 +103,7 @@ cd ../member-service
 ./gradlew bootJar
 ```
 
-현재 FastAPI 테스트 14개와 React 테스트 3개가 있으며, Spring Boot 테스트는 다음 구현
-단계에서 추가할 예정입니다.
+현재 FastAPI 테스트 20개, React 테스트 3개, Spring Boot 통합 테스트 5개가 있습니다.
 
 ## 데이터 정책
 
